@@ -52,7 +52,7 @@ jobs:
       - name: Container runs as non-root user
         run: test "$(docker run --rm --entrypoint whoami headercheck)" = "appuser"
 
-          - name: Log in to GitHub Container Registry
+      - name: Log in to GitHub Container Registry
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
