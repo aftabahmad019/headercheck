@@ -18,8 +18,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run tests
-        run: pytest -v
+      - name: Run tests with coverage
+        run: pytest -v --cov=headercheck --cov-report=term-missing --cov-report=html --cov-fail-under=90
+
+      - name: Add coverage summary
+        run: coverage report --format=markdown >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v5
+        with:
+          name: coverage-report
+          path: htmlcov/
 
   docker:
     needs: test
