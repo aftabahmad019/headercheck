@@ -20,3 +20,22 @@ jobs:
 
       - name: Run tests
         run: pytest -v
+
+    docker:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t headercheck .
+
+      - name: Smoke test - usage error returns exit code 2
+        run: |
+          set +e
+          docker run --rm headercheck
+          test $? -eq 2
+
+      - name: Container runs as non-root user
+        run: test "$(docker run --rm --entrypoint whoami headercheck)" = "appuser"
