@@ -61,6 +61,8 @@ pytest -v
 
 The test suite mocks all network calls, so it runs fast and never depends on a live website. It covers present and missing headers, case-insensitive header names, all exit codes, and unreachable sites.
 
+Coverage is measured with `pytest-cov` (currently 97%), and CI fails if it drops below 90%. The HTML coverage report is uploaded as a build artifact on every run.
+
 ## Design notes
 
 - **Mocked tests:** HTTP responses are faked with `unittest.mock`, keeping tests fast, deterministic and offline.
