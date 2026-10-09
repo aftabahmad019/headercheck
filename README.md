@@ -42,6 +42,28 @@ Example output:
 2 of 5 security headers missing.
 ```
 
+### Prebuilt image from GitHub Container Registry
+
+No cloning or building needed:
+
+```
+docker run --rm ghcr.io/aftabahmad019/headercheck https://example.com
+```
+
+The image is built, tested and published automatically by CI on every push to `main`, tagged as `latest` and with the commit SHA.
+
+### On Kubernetes (scheduled check)
+
+`k8s/cronjob.yaml` runs the check on a schedule as a Kubernetes CronJob:
+
+```
+kubectl apply -f k8s/cronjob.yaml
+kubectl get jobs
+kubectl logs job/<job-name>
+```
+
+The manifest enforces a non-root user, blocks privilege escalation, sets CPU and memory limits, and prevents overlapping runs.
+
 ## Exit codes
 
 | Code | Meaning |
@@ -69,10 +91,10 @@ Coverage is measured with `pytest-cov` (currently 97%), and CI fails if it drops
 - **Clean failure handling:** network errors produce a clear message and exit code 3 instead of a stack trace.
 - **Non-root container:** the Docker image runs as an unprivileged user (`appuser`), following the principle of least privilege. CI verifies this on every push.
 - **CI pipeline:** GitHub Actions runs the tests, then builds the Docker image and smoke-tests it.
+- **Hardened on Kubernetes too:** the CronJob uses a security context (`runAsNonRoot`, no privilege escalation) and resource limits, so the tool cannot run as root or exhaust cluster resources.
 
 ## Roadmap
 
-- Run as a scheduled Kubernetes CronJob
 - JSON output for integration with other tools
 - Checking header values, not just presence
 
